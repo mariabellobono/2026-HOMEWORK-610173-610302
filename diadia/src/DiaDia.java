@@ -26,7 +26,7 @@ public class DiaDia {
 			"o regalarli se pensi che possano ingraziarti qualcuno.\n\n"+
 			"Per conoscere le istruzioni usa il comando 'aiuto'.";
 	
-	static final private String[] elencoComandi = {"vai", "aiuto", "fine"};
+	static final private String[] elencoComandi = {"vai", "aiuto", "fine","prendi","posa"};
 
 	private Partita partita;
 
@@ -57,10 +57,15 @@ public class DiaDia {
 		if (comandoDaEseguire.getNome().equals("fine")) {
 			this.fine(); 
 			return true;
-		} else if (comandoDaEseguire.getNome().equals("vai"))
+		} else if (comandoDaEseguire.getNome().equals("vai")) {
 			this.vai(comandoDaEseguire.getParametro());
-		else if (comandoDaEseguire.getNome().equals("aiuto"))
+		} else if (comandoDaEseguire.getNome().equals("aiuto")) {
 			this.aiuto();
+		} else if (comandoDaEseguire.getNome().equals("prendi")) {
+			this.prendi(comandoDaEseguire.getParametro());
+		} else if (comandoDaEseguire.getNome().equals("posa")) {
+			this.posa(comandoDaEseguire.getParametro());
+		}
 		else
 			System.out.println("Comando sconosciuto");
 		if (this.partita.vinta()) {
@@ -100,12 +105,19 @@ public class DiaDia {
 		System.out.println(partita.getLabirinto().getStanzaCorrente().getDescrizione());
 	}
 
+	
+	private void prendi() {
+		Stanza stanzaCorrente = this.partita.getLabirinto().getStanzaCorrente();
+		
+		
+	}
 	/**
 	 * Comando "Fine".
 	 */
 	private void fine() {
 		System.out.println("Grazie di aver giocato!");  // si desidera smettere
 	}
+	
 
 	public static void main(String[] argc) {
 		DiaDia gioco = new DiaDia();
