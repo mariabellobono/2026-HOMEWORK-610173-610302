@@ -106,11 +106,61 @@ public class DiaDia {
 	}
 
 	
-	private void prendi() {
+	private void prendi(String nomeAttrezzo) {
+		if(nomeAttrezzo != null) {
+			System.out.println("cosa vuoi prendere?");
+			return;
+		}
 		Stanza stanzaCorrente = this.partita.getLabirinto().getStanzaCorrente();
+		Borsa borsa = this.partita.getGiocatore().getBorsa();
+		Attrezzo attrezzo = stanzaCorrente.getAttrezzo(nomeAttrezzo);
+		
+		//verifico spazio in borsa
+		if(attrezzo != null ) {
+			if(borsa.addAttrezzo(attrezzo)) {
+				stanzaCorrente.removeAttrezzo(nomeAttrezzo);
+				System.out.println("hai preso: "+ nomeAttrezzo);
+			} else {
+				System.out.println("spazio non disponibile");
+			}
+		} else {
+			System.out.println("Attrezzo non disponibile");
+	}
+}
+	
+	private void posa(String nomeAttrezzo) {
+		if(nomeAttrezzo != null) {
+			System.out.println("cosa vuoi posare?");
+			return;
+		}
+		Stanza stanzaCorrente = this.partita.getLabirinto().getStanzaCorrente();
+		Borsa borsa = this.partita.getGiocatore().getBorsa();
+		Attrezzo a = borsa.removeAttrezzo(nomeAttrezzo);
+	
+		if(a != null) {
+			if(stanzaCorrente.addAttrezzo(a)) {
+			 borsa.removeAttrezzo(nomeAttrezzo);
+			 System.out.println("attrezzo posato");
+			 
+		} else {
+			System.out.println("spazio non disponibile in stanza!");
+			borsa.addAttrezzo(a);
+	}
+} else {
+	System.out.println("attrezzo non disponibile in stanza");
+	
+}
+		
+			
+		
+		
 		
 		
 	}
+	
+	
+	
+	
 	/**
 	 * Comando "Fine".
 	 */
