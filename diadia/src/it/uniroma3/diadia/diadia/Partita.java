@@ -1,6 +1,6 @@
-
-
-
+package it.uniroma3.diadia.diadia;
+import it.uniroma3.diadia.ambienti.Labirinto;
+import it.uniroma3.diadia.giocatore.Giocatore;
 
 /**
  * Questa classe modella una partita del gioco
