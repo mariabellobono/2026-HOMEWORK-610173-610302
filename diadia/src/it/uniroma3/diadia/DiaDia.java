@@ -1,5 +1,7 @@
 
-package it.uniroma3.diadia.diadia;
+package it.uniroma3.diadia;
+
+
 
 /**
  * Classe principale di diadia, un semplice gioco di ruolo ambientato al dia.
