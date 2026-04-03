@@ -20,7 +20,7 @@ public class StanzaTest {
 		this.stanzaPiena.addAttrezzo(martello);
 	}
 	
-	//test add
+	//test addattrezzo
 	
 	@Test
 	public void testAddAttrezzoInStanzaVuota() {
@@ -40,7 +40,7 @@ public class StanzaTest {
 		assertTrue(this.stanzaVuota.addAttrezzo(null));
 	}
 
-	//test get
+	//test getattrezzo
 	
 	@Test
 	public void testGetAttrezzoPresente() {
@@ -57,7 +57,7 @@ public class StanzaTest {
 		assertNull(this.stanzaPiena.getAttrezzo(null));
 	}
 
-	//test remove
+	//test removeattrezzo 
 
 	@Test
 	public void testRemoveAttrezzoPresente() {

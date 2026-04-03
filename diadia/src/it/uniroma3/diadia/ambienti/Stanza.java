@@ -154,26 +154,16 @@ public class Stanza {
 	 * @return l'attrezzo presente nella stanza.
      * 		   null se l'attrezzo non e' presente.
 	 */
-	/*public Attrezzo getAttrezzo(String nomeAttrezzo) {
-		Attrezzo attrezzoCercato;
-		attrezzoCercato = null;
-		for (Attrezzo attrezzo : this.attrezzi) {
-			if (attrezzo.getNome().equals(nomeAttrezzo))
-				attrezzoCercato = attrezzo;
-		}
-		return attrezzoCercato;	
-	}*/
 	
 	public Attrezzo getAttrezzo(String nomeAttrezzo) {
 	    Attrezzo attrezzoCercato = null;
 	    
-	    // Usiamo il numeroAttrezzi per scorrere solo dove sappiamo che ci sono oggetti
 	    for (int i = 0; i < this.numeroAttrezzi; i++) {
-	        // Controllo di sicurezza: l'elemento esiste?
+	        
 	        if (this.attrezzi[i] != null) {
 	            if (this.attrezzi[i].getNome().equals(nomeAttrezzo)) {
 	                attrezzoCercato = this.attrezzi[i];
-	                break; // Lo abbiamo trovato, possiamo smettere di cercare!
+	                break; 
 	            }
 	        }
 	    }
@@ -189,35 +179,20 @@ public class Stanza {
 		if (nomeAttrezzo == null) return false;
 
 	    for (int i = 0; i < this.numeroAttrezzi; i++) {
-	        // Controlliamo se l'attrezzo in posizione i ha il nome cercato
+	        
 	        if (this.attrezzi[i] != null && this.attrezzi[i].getNome().equals(nomeAttrezzo)) {
 	            
-	            // Trovato! Applichiamo la logica dello "spostamento dell'ultimo"
-	            // Prendiamo l'ultimo attrezzo dell'array e lo mettiamo al posto di quello da rimuovere
 	            this.attrezzi[i] = this.attrezzi[this.numeroAttrezzi - 1];
 	            
-	            // Puliamo l'ultima posizione e decrementiamo il contatore
 	            this.attrezzi[this.numeroAttrezzi - 1] = null;
 	            this.numeroAttrezzi--;
 	            
-	            return true; // Operazione riuscita
+	            return true; 
 	        }
 	    }
-	    return false; // Se arriviamo qui, l'attrezzo non c'era
+	    return false; 
 	}
 		
-	
-		
-	//	for(Attrezzo a : this.attrezzi) {
-	//		if(a.getNome().equals(attrezzo.getNome())) {
-	//			a = null;
-	//			return true;
-	//		}
-	//	}
-	//	return false; 
-//	}
-
-
 	public String[] getDirezioni() {
 		String[] direzioni = new String[this.numeroStanzeAdiacenti];
 	    for(int i=0; i<this.numeroStanzeAdiacenti; i++)
