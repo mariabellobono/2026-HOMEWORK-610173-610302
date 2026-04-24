@@ -17,4 +17,13 @@ public class ComandoFine implements Comando {
     public void setParametro(String parametro) {
         // Anche il comando 'fine' non richiede parametri
     }
+    @Override
+    public String getNome() {
+        return "fine";
+    }
+
+    @Override
+    public String getParametro() {
+        return null;
+    }
 }

@@ -32,4 +32,14 @@ public class ComandoPosa implements Comando {
     public void setParametro(String parametro) {
         this.nomeAttrezzo = parametro;
     }
+    
+    @Override
+    public String getNome() {
+        return "posa";
+    }
+
+    @Override
+    public String getParametro() {
+        return this.nomeAttrezzo;
+    }
 }
