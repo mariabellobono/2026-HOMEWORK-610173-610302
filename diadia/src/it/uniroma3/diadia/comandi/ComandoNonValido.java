@@ -6,11 +6,11 @@ public class ComandoNonValido implements Comando {
 
     @Override
     public void esegui(Partita partita) {
-        System.out.println("Comando sconosciuto");
+        System.out.println("Comando sconosciuto.");
     }
 
     @Override
     public void setParametro(String parametro) {
-        // Nessun parametro per i comandi non validi
+        // Nulla da fare
     }
 }
