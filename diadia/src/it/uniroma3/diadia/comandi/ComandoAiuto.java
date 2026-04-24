@@ -19,4 +19,14 @@ public class ComandoAiuto implements Comando {
     public void setParametro(String parametro) {
         // Il comando 'aiuto' non richiede parametri, quindi il corpo del metodo è vuoto
     }
+    
+    @Override
+    public String getNome() {
+        return "aiuto";
+    }
+
+    @Override
+    public String getParametro() {
+        return null;
+    }
 }
