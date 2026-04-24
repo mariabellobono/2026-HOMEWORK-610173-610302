@@ -27,5 +27,9 @@ public class Giocatore {
 	public void setCfu(int cfu) {
 		this.cfu = cfu;		
 	}
+
+	public boolean isVivo() {
+		return this.cfu > 0;
+	}
 	
 }

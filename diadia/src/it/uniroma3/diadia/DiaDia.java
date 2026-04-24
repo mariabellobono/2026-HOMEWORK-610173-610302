@@ -27,7 +27,7 @@ public class DiaDia {
 
 	public DiaDia(IO io) {
 		this.partita = new Partita();
-		this.io = io();
+		this.io = io;
 		// La responsabilità di creare i comandi è affidata alla factory [cite: 55, 86]
 		this.factory = new FabbricaDiComandiFisarmonica();
 	}
@@ -67,8 +67,9 @@ public class DiaDia {
 	}
 
 	public static void main(String[] argc) {
-		DiaDia gioco = new DiaDia();
+		
 		IO io = new IOConsole();
+		DiaDia gioco = new DiaDia(io);
 		gioco.gioca();
 	}
 	
