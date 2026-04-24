@@ -1,77 +1,75 @@
-
 package it.uniroma3.diadia;
 
 import it.uniroma3.diadia.comandi.Comando;
-
 import it.uniroma3.diadia.comandi.FabbricaDiComandi;
 import it.uniroma3.diadia.comandi.FabbricaDiComandiFisarmonica;
 
- /*Classe principale di diadia, un semplice gioco di ruolo ambientato al dia.
- * Ristrutturata per utilizzare il polimorfismo e il pattern Factory.
+/**
+ * Classe principale del gioco, responsabile del ciclo di controllo.
+ * Accetta un'interfaccia IO per permettere il testing automatico.
+ *
+ * @author docente di POO
+ * @version base
  */
 public class DiaDia {
 
-	static final private String MESSAGGIO_BENVENUTO = ""+
+	static final private String MESSAGGIO_BENVENUTO = "" +
 			"Ti trovi nell'Universita', ma oggi e' diversa dal solito...\n" +
-			"Meglio andare al piu' presto in biblioteca a studiare. Ma dov'e'?\n"+
-			"I locali sono popolati da strani personaggi, " +
-			"alcuni amici, altri... chissa!\n"+
-			"Ci sono attrezzi che potrebbero servirti nell'impresa:\n"+
-			"puoi raccoglierli, usarli, posarli quando ti sembrano inutili\n" +
-			"o regalarli se pensi che possano ingraziarti qualcuno.\n\n"+
-			"Per conoscere le istruzioni usa il comando 'aiuto'.";
+			"Un malvagio prorettore ti ha chiuso in questo labirinto di stanze.\n" +
+			"Per uscire dovrai riuscire a raggiungere l'Atrio e vincere!\n" +
+			"Attento ai CFU: se li esaurisci sarai bocciato a vita!\n" +
+			"Scrivi 'aiuto' per vedere l'elenco dei comandi.\n";
 
 	private Partita partita;
 	private IO io;
-	private FabbricaDiComandi factory;
 
+	/**
+	 * Costruttore aggiornato: riceve l'oggetto IO dall'esterno.
+	 * @param io l'interfaccia di I/O (Console o Simulatore)
+	 */
 	public DiaDia(IO io) {
-		this.partita = new Partita();
 		this.io = io;
-		// La responsabilità di creare i comandi è affidata alla factory [cite: 55, 86]
-		this.factory = new FabbricaDiComandiFisarmonica();
+		this.partita = new Partita();
 	}
 
 	public void gioca() {
+		String istruzione; 
+
 		this.io.mostraMessaggio(MESSAGGIO_BENVENUTO);
-		String istruzione;
-		do {
+		do		
 			istruzione = this.io.leggiRiga();
-		} while (!processaIstruzione(istruzione));
-	}
+		while (!processaIstruzione(istruzione));
+	}   
 
 	/**
-	 * Processa una istruzione utilizzando il polimorfismo[cite: 34, 42].
-	 * @return true se l'istruzione termina il gioco, false altrimenti.
+	 * Processa l'istruzione usando la Fabbrica di Comandi e il polimorfismo.
+	 * @param istruzione la riga digitata dall'utente
+	 * @return vero se la partita e' finita, falso altrimenti
 	 */
 	private boolean processaIstruzione(String istruzione) {
 		Comando comandoDaEseguire;
-		// La factory costruisce il comando specifico basandosi sulla stringa [cite: 49, 93]
-		comandoDaEseguire = factory.costruisciComando(istruzione);
+		FabbricaDiComandi factory = new FabbricaDiComandiFisarmonica();
 		
-		// Esecuzione polimorfa: DiaDia non conosce i dettagli del comando [cite: 42, 57]
+		comandoDaEseguire = factory.costruisciComando(istruzione);
 		comandoDaEseguire.esegui(this.partita);
-
+		
 		if (this.partita.vinta()) {
-			this.io.mostraMessaggio("Hai vinto!");
+			this.io.mostraMessaggio("HAI VINTO!");
 			return true;
 		}
 		
 		if (!this.partita.getGiocatore().isVivo()) {
-			this.io.mostraMessaggio("Hai esaurito i CFU...");
+			this.io.mostraMessaggio("Hai esaurito i CFU... GAME OVER!");
 			return true;
 		}
 		
-		// Ritorna true se il comando ha impostato la partita come finita (es: fine) [cite: 54]
 		return this.partita.isFinita();
 	}
 
 	public static void main(String[] argc) {
-		
+		/* Per giocare normalmente usiamo la console */
 		IO io = new IOConsole();
 		DiaDia gioco = new DiaDia(io);
 		gioco.gioca();
 	}
-	
-	
 }
