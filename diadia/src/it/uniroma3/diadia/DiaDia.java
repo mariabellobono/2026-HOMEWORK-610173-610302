@@ -2,11 +2,11 @@
 package it.uniroma3.diadia;
 
 import it.uniroma3.diadia.comandi.Comando;
+
 import it.uniroma3.diadia.comandi.FabbricaDiComandi;
 import it.uniroma3.diadia.comandi.FabbricaDiComandiFisarmonica;
 
-/**
- * Classe principale di diadia, un semplice gioco di ruolo ambientato al dia.
+ /*Classe principale di diadia, un semplice gioco di ruolo ambientato al dia.
  * Ristrutturata per utilizzare il polimorfismo e il pattern Factory.
  */
 public class DiaDia {
@@ -22,21 +22,21 @@ public class DiaDia {
 			"Per conoscere le istruzioni usa il comando 'aiuto'.";
 
 	private Partita partita;
-	private IOConsole console;
+	private IO io;
 	private FabbricaDiComandi factory;
 
-	public DiaDia() {
+	public DiaDia(IO io) {
 		this.partita = new Partita();
-		this.console = new IOConsole();
+		this.io = io();
 		// La responsabilità di creare i comandi è affidata alla factory [cite: 55, 86]
 		this.factory = new FabbricaDiComandiFisarmonica();
 	}
 
 	public void gioca() {
-		this.console.mostraMessaggio(MESSAGGIO_BENVENUTO);
+		this.io.mostraMessaggio(MESSAGGIO_BENVENUTO);
 		String istruzione;
 		do {
-			istruzione = this.console.leggiRiga();
+			istruzione = this.io.leggiRiga();
 		} while (!processaIstruzione(istruzione));
 	}
 
@@ -53,11 +53,12 @@ public class DiaDia {
 		comandoDaEseguire.esegui(this.partita);
 
 		if (this.partita.vinta()) {
-			this.console.mostraMessaggio("Hai vinto!");
+			this.io.mostraMessaggio("Hai vinto!");
 			return true;
 		}
+		
 		if (!this.partita.getGiocatore().isVivo()) {
-			this.console.mostraMessaggio("Hai esaurito i CFU...");
+			this.io.mostraMessaggio("Hai esaurito i CFU...");
 			return true;
 		}
 		
@@ -67,6 +68,9 @@ public class DiaDia {
 
 	public static void main(String[] argc) {
 		DiaDia gioco = new DiaDia();
+		IO io = new IOConsole();
 		gioco.gioca();
 	}
+	
+	
 }
