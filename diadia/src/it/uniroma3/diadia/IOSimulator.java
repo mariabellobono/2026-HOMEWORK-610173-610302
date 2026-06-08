@@ -30,7 +30,7 @@ public class IOSimulator implements IO {
 
 	@Override
 	public String leggiRiga() {
-		// Restituisce la riga successiva dalla lista di input simulato
+		// Restituisce la riga successiva 
 		String riga = this.righeDaLeggere.get(indiceRigaCorrente);
 		this.indiceRigaCorrente++;
 		return riga;
