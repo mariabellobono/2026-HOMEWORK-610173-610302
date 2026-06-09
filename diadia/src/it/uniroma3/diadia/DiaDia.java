@@ -1,75 +1,73 @@
 package it.uniroma3.diadia;
 
-import it.uniroma3.diadia.comandi.Comando;
-import it.uniroma3.diadia.comandi.FabbricaDiComandi;
-import it.uniroma3.diadia.comandi.FabbricaDiComandiFisarmonica;
+import java.util.Scanner;
 
-/**
- * Classe principale del gioco, responsabile del ciclo di controllo.
- * Accetta un'interfaccia IO per permettere il testing automatico.
- *
- * @author docente di POO
- * @version base
- */
+import it.uniroma3.diadia.ambienti.*;
+import it.uniroma3.diadia.comandi.*;
+
 public class DiaDia {
 
-	static final private String MESSAGGIO_BENVENUTO = "" +
+	public static final String MESSAGGIO_BENVENUTO = ""+
 			"Ti trovi nell'Universita', ma oggi e' diversa dal solito...\n" +
-			"Un malvagio prorettore ti ha chiuso in questo labirinto di stanze.\n" +
-			"Per uscire dovrai riuscire a raggiungere l'Atrio e vincere!\n" +
-			"Attento ai CFU: se li esaurisci sarai bocciato a vita!\n" +
-			"Scrivi 'aiuto' per vedere l'elenco dei comandi.\n";
+			"Meglio andare al piu' presto in biblioteca a studiare. Ma dov'e'?\n"+
+			"I locali sono popolati da strani personaggi, " +
+			"alcuni amici, altri... chissa!\n"+
+			"Ci sono attrezzi che potrebbero servirti nell'impresa:\n"+
+			"puoi raccoglierli, usarli, posarli quando ti sembrano inutili\n" +
+			"o regalarli se pensi che possano ingraziarti qualcuno.\n\n"+
+			"Per conoscere le istruzioni usa il comando 'aiuto'.";
 
-	private Partita partita;
-	private IO io;
-
-	/**
-	 * Costruttore aggiornato: riceve l'oggetto IO dall'esterno.
-	 * @param io l'interfaccia di I/O (Console o Simulatore)
-	 */
-	public DiaDia(IO io) {
-		this.io = io;
-		this.partita = new Partita();
+	private IO console;
+	private Partita partita; 
+	private Labirinto labirinto;
+	
+	public DiaDia(IO console) {
+		this.console = console;
+	}
+	
+	public DiaDia(Labirinto labirinto,IO console) {
+		this.labirinto = labirinto;
+		this.partita = new Partita(this.labirinto);
+		this.console = console;
 	}
 
-	public void gioca() {
+	public void gioca() throws Exception {
 		String istruzione; 
+		
+		this.console.mostraMessaggio(MESSAGGIO_BENVENUTO);
+		do {
+			istruzione = this.console.leggiRiga();
+		}while (!processaIstruzione(istruzione) );
 
-		this.io.mostraMessaggio(MESSAGGIO_BENVENUTO);
-		do		
-			istruzione = this.io.leggiRiga();
-		while (!processaIstruzione(istruzione));
-	}   
+	} 
 
-	/**
-	 * Processa l'istruzione usando la Fabbrica di Comandi e il polimorfismo.
-	 * @param istruzione la riga digitata dall'utente
-	 * @return vero se la partita e' finita, falso altrimenti
-	 */
-	private boolean processaIstruzione(String istruzione) {
+	private boolean processaIstruzione(String istruzione) throws Exception {
 		Comando comandoDaEseguire;
-		FabbricaDiComandi factory = new FabbricaDiComandiFisarmonica();
+		FabbricaDiComandiRiflessiva factory = new FabbricaDiComandiRiflessiva(this.console);
 		
-		comandoDaEseguire = factory.costruisciComando(istruzione);
+		try {
+			comandoDaEseguire = factory.costruisciComando(istruzione);
+		} catch (ClassNotFoundException cne) {
+			comandoDaEseguire = factory.costruisciComando("NonValido");
+		} catch (NullPointerException npe) {
+			comandoDaEseguire = factory.costruisciComando("NonValido");
+		}
+		
 		comandoDaEseguire.esegui(this.partita);
-		
-		if (this.partita.vinta()) {
-			this.io.mostraMessaggio("HAI VINTO!");
-			return true;
-		}
-		
-		if (!this.partita.getGiocatore().isVivo()) {
-			this.io.mostraMessaggio("Hai esaurito i CFU... GAME OVER!");
-			return true;
-		}
-		
+		if (this.partita.vinta())
+			this.console.mostraMessaggio("Hai vinto!");
+		if (!this.partita.giocatoreIsVivo())
+			this.console.mostraMessaggio("Hai esaurito i CFU...");
 		return this.partita.isFinita();
+	} 
+
+	public static void main(String[] argc) throws Exception {
+		Scanner scanner = new Scanner(System.in);
+		IO console = new IOConsole(scanner);
+		Labirinto labirinto = Labirinto.newBuilder("labirinto5.txt").getLabirinto();
+		DiaDia gioco = new DiaDia(labirinto, console);
+		gioco.gioca();
+		scanner.close();
 	}
 
-	public static void main(String[] argc) {
-		/* Per giocare normalmente usiamo la console */
-		IO io = new IOConsole();
-		DiaDia gioco = new DiaDia(io);
-		gioco.gioca();
-	}
 }

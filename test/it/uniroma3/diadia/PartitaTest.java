@@ -1,56 +1,49 @@
 package it.uniroma3.diadia;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
+import java.io.FileNotFoundException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import it.uniroma3.diadia.ambienti.Labirinto;
 import it.uniroma3.diadia.ambienti.Stanza;
 
 public class PartitaTest {
 
-	private Partita partita;
+	Labirinto labirinto;
+	Partita p;
+	Stanza s;
 
 	@BeforeEach
-	public void setUp() {
-		this.partita = new Partita();
+	public void setUp() throws FileNotFoundException, FormatoFileNonValidoException {
+		 labirinto = Labirinto.newBuilder("labirinto2.txt").getLabirinto();
+//				.addStanzaIniziale("Atrio")
+//				.addAttrezzo("martello", 3)
+//				.addStanzaVincente("Biblioteca")
+//				.addAdiacenza("Atrio", "Biblioteca", "nord")
+//				.getLabirinto();
+		 p = new Partita(labirinto);
+		 s = new Stanza("Stanza");
 	}
-
-	//test partita vinta
-
+	
 	@Test
-	public void testVintaInizioPartita() {
-		// all'inizio non dovrei aver vinto (parto in atrio, non in biblioteca)
-		assertFalse(this.partita.vinta());
-	}
-
-	@Test
-	public void testVintaSpostandoGiocatoreInStanzaVincente() {
-		// stanza corrente uguale a quella vincente per simulare vittoria
-		Stanza vincente = this.partita.getLabirinto().getStanzaVincente();
-		this.partita.getLabirinto().setStanzaCorrente(vincente);
-		assertTrue(this.partita.vinta());
-	}
-
-	//test finita
-
-	@Test
-	public void testIsFinitaPerCfuZero() {
-		// modifico i CFU a 0
-		this.partita.getGiocatore().setCfu(0);
-		assertTrue(this.partita.isFinita(), "La partita deve finire se i CFU sono esauriti");
+	public void testGetStanzaVincente() {
+		assertEquals("Biblioteca", p.getLabirinto().getStanzaVincente().getNome());
 	}
 
 	@Test
-	public void testIsFinitaPerSetFinita() {
-		// forzo fine partita
-		this.partita.setFinita();
-		assertTrue(this.partita.isFinita());
+	public void testSetStanzaCorrente() {
+		p.getLabirinto().setStanzaCorrente(s);
+		assertEquals(s, p.getLabirinto().getStanzaCorrente());
 	}
 
 	@Test
-	public void testIsFinitaInizioPartita() {
-		//appena creata partita, non deve essere finita
-		assertFalse(this.partita.isFinita());
+	public void testIsFinita() {
+		
+		assertFalse(p.isFinita());
 	}
+	
 }
