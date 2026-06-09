@@ -1,45 +1,53 @@
 package it.uniroma3.diadia.comandi;
 
-
 import it.uniroma3.diadia.Partita;
 import it.uniroma3.diadia.attrezzi.Attrezzo;
 
-public class ComandoPosa implements Comando {
-    private String nomeAttrezzo;
+public class ComandoPosa extends AbstractComando {
+	
+	private String object;
+	private final static String NOME = "posa";
+	
+	public ComandoPosa() {
+		this.setNome(NOME);
+	}
 
-    @Override
-    public void esegui(Partita partita) {
-        if (nomeAttrezzo == null) {
-            System.out.println("Cosa vuoi posare?");
-            return;
-        }
+	@Override
+	public void esegui(Partita partita) {
+		StringBuilder msg = new StringBuilder();
+		boolean vuoto = partita.getGiocatore().getBorsa().isEmpty();
+		if(!vuoto) { //controllo se ci sono attrezzi nella borsa
+			if(this.object == null) { //controllo se è stato scritto un attrezzo da prendere
+				msg.append("Quale oggetto della tua borsa vuoi posare? \nEcco un elenco:");
+				for(Attrezzo a : partita.getGiocatore().getBorsa().getAttrezzi())//stampo elenco di attrezzi nella borsa
+					if(a != null)
+						msg.append(a.getDescrizione());
+				//this.setParametro(this.console.leggiRiga()); //leggo attrezzo scelto
+			}else {	
 
-        Attrezzo attrezzo = partita.getGiocatore().getBorsa().getAttrezzo(nomeAttrezzo);
-        
-        if (attrezzo != null) {
-            if (partita.getLabirinto().getStanzaCorrente().addAttrezzo(attrezzo)) {
-                partita.getGiocatore().getBorsa().removeAttrezzo(nomeAttrezzo);
-                System.out.println("Hai posato: " + nomeAttrezzo);
-            } else {
-                System.out.println("Non c'è spazio nella stanza per posare questo attrezzo!");
-            }
-        } else {
-            System.out.println("Non hai questo attrezzo nella borsa.");
-        }
-    }
+				if(partita.getGiocatore().getBorsa().hasAttrezzo(this.object)) //controllo se attrezzo è presente
+					if(partita.getStanzaCorrente().addAttrezzo(partita.getGiocatore().getBorsa().removeAttrezzo(this.object)))//controllo se possibile mettere attrezzo nella stanza
+						msg.append(this.object + " rimosso dal tuo inventario \nEcco una descrizione della tua borsa adesso: \n" + partita.getGiocatore().getBorsa().getDescrizione() + "\n");
+					else //riga 209
+						//nessuna rimozione per via di un fallimento nell'aggiunta nella stanza 
+						msg.append("Impossibile inserire oggetto nella stanza!\n");
+				else //riga 208
+					msg.append("Attrezzo non presente nella tua borsa\n");
+			}
+		}else //riga 196
+			msg.append("Non ci sono attrezzi nella tua borsa\n");
 
-    @Override
-    public void setParametro(String parametro) {
-        this.nomeAttrezzo = parametro;
-    }
-    
-    @Override
-    public String getNome() {
-        return "posa";
-    }
+		this.getIo().mostraMessaggio(msg.toString());
+	}
 
-    @Override
-    public String getParametro() {
-        return this.nomeAttrezzo;
-    }
+	@Override
+	public void setParametro(String parametro) {
+		this.object = parametro;
+	}
+
+	@Override
+	public String getParametro() {
+		return this.object;
+	}
+	
 }

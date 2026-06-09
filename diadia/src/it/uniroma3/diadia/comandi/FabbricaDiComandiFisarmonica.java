@@ -2,37 +2,66 @@ package it.uniroma3.diadia.comandi;
 
 import java.util.Scanner;
 
-public class FabbricaDiComandiFisarmonica implements FabbricaDiComandi {
-    @Override
-    public Comando costruisciComando(String istruzione) {
-        Scanner scannerDiParole = new Scanner(istruzione);
-        String nomeComando = null;
-        String parametro = null;
-        Comando comando = null;
+import it.uniroma3.diadia.IO;
 
-        if (scannerDiParole.hasNext())
-            nomeComando = scannerDiParole.next();
-        if (scannerDiParole.hasNext())
-            parametro = scannerDiParole.next();
+public class FabbricaDiComandiFisarmonica implements FabbricaDiComandi{
+	
+	private IO io;
+	
+	public FabbricaDiComandiFisarmonica(IO io) {
+		this.io = io;
+	}
 
-        if (nomeComando == null)
-            comando = new ComandoNonValido();
-        else if (nomeComando.equals("vai"))
-            comando = new ComandoVai();
-        else if (nomeComando.equals("prendi"))
-            comando = new ComandoPrendi();
-        else if (nomeComando.equals("posa"))
-            comando = new ComandoPosa();
-        else if (nomeComando.equals("aiuto"))
-            comando = new ComandoAiuto();
-        else if (nomeComando.equals("fine"))
-            comando = new ComandoFine();
-        else if (nomeComando.equals("guarda"))
-            comando = new ComandoGuarda();
-        else
-            comando = new ComandoNonValido();
+	@Override
+	public Comando costruisciComando(String istruzione) {
+	    Scanner scannerDiParole = new Scanner(istruzione);
+	    String nomeComando = null;
+	    String parametro = null;
+	    Comando comando = null;
+	    
+	    if (scannerDiParole.hasNext())
+	        nomeComando = scannerDiParole.next();	// Prima parola: nome del comando
+	    if (scannerDiParole.hasNext())
+	        parametro = scannerDiParole.next();		// Seconda parola: eventuale parametro
+	   
+	    // Caso in cui il comando sia null
+	    if (nomeComando == null) {
+	    	comando = new ComandoNonValido();
+	    }
+	    switch (nomeComando) {
+	        case "vai":
+	            comando = new ComandoVai();
+	            break;
+	        
+	        case "prendi":
+	            comando = new ComandoPrendi();
+	            break;
+	        
+	        case "posa":
+	            comando = new ComandoPosa();
+	            break;
+	        
+	        case "aiuto":
+	            comando = new ComandoAiuto();
+	            break;
+	        
+	        case "fine":
+	            comando = new ComandoFine();
+	            break;
+	        
+	        case "guarda":
+	            comando = new ComandoGuarda();
+	            break;
+	        
+	        default:
+	            comando = new ComandoNonValido();
+	            break;
+	    }
+	    
+	    comando.setParametro(parametro);
+	    comando.setIo(this.io);
+	    scannerDiParole.close();
+	    return comando;
+	}
 
-        comando.setParametro(parametro);
-        return comando;
-    }
 }

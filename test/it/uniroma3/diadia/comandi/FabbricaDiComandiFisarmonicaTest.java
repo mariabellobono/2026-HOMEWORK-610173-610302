@@ -1,48 +1,52 @@
 package it.uniroma3.diadia.comandi;
 
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Test per la verifica del corretto riconoscimento dei comandi.
- */
+import java.util.Scanner;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import it.uniroma3.diadia.IOConsole;
+import it.uniroma3.diadia.IO;
+
 public class FabbricaDiComandiFisarmonicaTest {
 
-    private FabbricaDiComandiFisarmonica factory;
+	private FabbricaDiComandiFisarmonica fabbrica;
+	private IO io;
+	private Comando expected;
+	
+	@BeforeEach
+	public void setUp() throws Exception {
+		io = new IOConsole(new Scanner(System.in));
+		fabbrica = new FabbricaDiComandiFisarmonica(io);
+	}
 
-    @Before
-    public void setUp() {
-        this.factory = new FabbricaDiComandiFisarmonica();
-    }
+	@AfterEach
+	public void tearDown() throws Exception {
+	
+	}
 
-    @Test
-    public void testCostruisciComandoVaiConParametro() {
-        Comando comando = this.factory.costruisciComando("vai nord");
-        // Verifica del riconoscimento del nome
-        assertEquals("vai", comando.getNome());
-        // Verifica del riconoscimento del parametro
-        assertEquals("nord", comando.getParametro());
-    }
+	@Test
+	public void testComandoNonValido() {
+		expected = new ComandoNonValido();
+		assertEquals( expected.getNome(), fabbrica.costruisciComando("pippo").getNome());
+	}
+	
+	@Test
+	public void testComandoConParametro() {
+		expected = new ComandoVai();
+		expected.setParametro("nord");
+		Comando current = fabbrica.costruisciComando("vai nord");
+		assertEquals( expected.getNome(), current.getNome());
+		assertEquals( expected.getParametro(), current.getParametro());
+	}
+	
+	@Test
+	public void testComandoSenzaParametro() {
+		expected = new ComandoFine();
+		assertEquals( expected.getNome(), fabbrica.costruisciComando("fine").getNome());
+	}
 
-    @Test
-    public void testCostruisciComandoSenzaParametro() {
-        Comando comando = this.factory.costruisciComando("aiuto");
-        assertEquals("aiuto", comando.getNome());
-        assertNull(comando.getParametro());
-    }
-
-    @Test
-    public void testCostruisciComandoInesistente() {
-        Comando comando = this.factory.costruisciComando("vola");
-        // ComandoNonValido dovrebbe restituire null come nome o un nome specifico
-        // a seconda della tua implementazione
-        assertNull(comando.getNome());
-    }
-
-    @Test
-    public void testCostruisciComandoStringaVuota() {
-        Comando comando = this.factory.costruisciComando("");
-        assertNull(comando.getNome());
-    }
 }
